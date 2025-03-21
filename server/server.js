@@ -1,28 +1,33 @@
-import express from 'express'
-import cors from 'cors'
-import 'dotenv/config'
-import { Console } from 'console'
-import connectDB from './config/mongodb.js'
-import { clerkWebhooks } from './controllers/webhooks.js'
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import connectDB from './config/mongodb.js';
+import { clerkWebhooks } from './controllers/webhooks.js';
 
-//Intialise Express
-const app=express()
+// Initialize Express
+const app = express();
 
-//connect to database
-await connectDB()
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-//Middlewear
-app.use(cors())
+// Connect to database inside an IIFE (Immediately Invoked Function Expression)
+(async () => {
+    try {
+        await connectDB();
+        console.log("✅ Database Connected Successfully");
+    } catch (error) {
+        console.error("❌ Database Connection Error:", error);
+        process.exit(1); // Stop the server if DB connection fails
+    }
+})();
 
-//Route
+// Routes
+app.get('/', (req, res) => res.send("API working"));
+app.post('/clerk', clerkWebhooks);
 
-app.get('/', (req,res)=>res.send("api working"))
-app.post('/clerk',express.json(),clerkWebhooks)
-
-//port
-const PORT=process.env.PORT  || 5000
-
-app.listen(PORT,()=>{
-    console.log(`server is running on port ${PORT}`)
-}
-)
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+});
