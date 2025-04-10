@@ -1,10 +1,12 @@
-import express from 'express';
-import { updateRoleToEducator } from '../controllers/educatorController.js';
-import { requireAuth } from '@clerk/express'; // ✅ import this
+import express from 'express'
+import { updateRoleToEducator } from '../controllers/educatorController.js'
 
-const educatorRouter = express.Router();
 
-// ✅ Protect the route
-educatorRouter.get('/update-role', requireAuth, updateRoleToEducator);
+const educatorRouter=express.Router()
 
-export default educatorRouter;
+
+//Add Educator Role
+
+educatorRouter.get('/update-role',updateRoleToEducator)
+
+export default educatorRouter
