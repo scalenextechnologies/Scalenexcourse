@@ -77,7 +77,7 @@ const fetchUserEnrolledCourses= async()=>{
         if (user) {
             logToken();
         }
-    }, [user]); 
+    }, [user])
     
     const value = {
         currency,

@@ -21,7 +21,7 @@ app.use(clerkMiddleware())
 
 app.get('/', (req,res)=>res.send("API working"))
 app.post('/clerk',express.json(),clerkWebhooks)
-app.use('/api/educator',express.json(),educatorRouter)
+app.use('/api/educator', express.json(), educatorRouter)
 
 //port
 const PORT=process.env.PORT  || 5000
