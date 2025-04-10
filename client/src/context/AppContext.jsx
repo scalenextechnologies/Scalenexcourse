@@ -77,7 +77,7 @@ const fetchUserEnrolledCourses= async()=>{
         if (user) {
             logToken();
         }
-    }, []); // <- This ensures the effect runs again when user is available
+    }, [user]); 
     
     const value = {
         currency,
