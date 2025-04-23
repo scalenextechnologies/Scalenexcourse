@@ -9,7 +9,7 @@ import { clerkMiddleware } from '@clerk/express'
 import connectCloudinary from './config/cloudinary.js'
 import courseRouter from './routes/courseRoute.js'
 import userRouter from './routes/userRoutes.js'
-import { type } from 'os'
+
 
 //Intialise Express
 const app=express()
