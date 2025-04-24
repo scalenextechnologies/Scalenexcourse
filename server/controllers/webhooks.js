@@ -107,7 +107,7 @@ export const stripeWebhooks = async (request, response) => {
         console.log('Purchase updated to completed')
 
         // Enroll the user in the course
-        const userData = await User.findById(purchaseData.userId)
+        const userData = await User.findOne(purchaseData.userId)
         const courseData = await Course.findById(purchaseData.courseId.toString())
 
         if (!userData || !courseData) {
