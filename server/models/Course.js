@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const lectureSchema = new mongoose.Schema({
   lectureId: { type: String, required: true },
-  lectureOrder: { type: Number, required: true },
   lectureTitle: { type: String, required: true },
+  lectureDuration: { type: Number, required: true },
   lectureUrl: { type: String, required: true },
   isPreviewFree: { type: Boolean, required: true },
-  lectureDuration: { type: Number, required: true },
+  lectureOrder: { type: Number, required: true },
 }, { _id: false });
 
 const chapterSchema = new mongoose.Schema({
@@ -28,7 +28,7 @@ const courseSchema = new mongoose.Schema({
     { userId: { type: String }, rating: { type: Number, min: 1, max: 5 } }
   ],
   educator: { type: String, ref: "User", required: true },
-  enrolledStudents: [{ type: String, ref: "User" }], // ✅ FIXED: array of strings
+  enrolledStudents: [{ type: String, ref: "User" }],
 }, { timestamps: true, minimize: false });
 
 const Course = mongoose.model("Course", courseSchema);
