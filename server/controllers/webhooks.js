@@ -76,28 +76,53 @@ export const stripeWebhooks = async (request, response) => {
   }
   switch (event.type) {
     case 'payment_intent.succeeded': {
-      const paymentIntent = event.data.object;
-      const paymentIntentId = paymentIntent.id;
-      const session = await stripeInstance.checkout.sessions.list({
-        payment_intent: paymentIntentId
-      })
-      const { purchaseId } = session.data[0].metadata
-      const purchaseData = await Purchase.findById(purchaseId)
-      const userData = await User.findById(purchaseData)
-      const courseData = await Course.findById(purchaseData.courseId.toString())
-
-      courseData.enrolledStudents.push(userData)
-      await courseData.save()
-
-      userData.enrolledCourses.push(courseData._id)
-      await userData.save()
-
-      purchaseData.status = 'completed'
-      await purchaseData.save()
-
+      try {
+        const paymentIntent = event.data.object;
+        const paymentIntentId = paymentIntent.id;
+    
+        const session = await stripeInstance.checkout.sessions.list({
+          payment_intent: paymentIntentId,
+          limit: 1
+        });
+    
+        if (!session.data.length || !session.data[0].metadata?.purchaseId) {
+          console.error("No session or purchaseId in metadata");
+          break;
+        }
+    
+        const { purchaseId } = session.data[0].metadata;
+        const purchaseData = await Purchase.findById(purchaseId);
+        if (!purchaseData) {
+          console.error("No Purchase found");
+          break;
+        }
+    
+        const userData = await User.findById(purchaseData.userId);
+        const courseData = await Course.findById(purchaseData.courseId.toString());
+    
+        if (!userData || !courseData) {
+          console.error("User or Course not found");
+          break;
+        }
+    
+        // Enroll user
+        courseData.enrolledStudents.push(userData._id);
+        await courseData.save();
+    
+        userData.enrolledCourses.push(courseData._id);
+        await userData.save();
+    
+        purchaseData.status = 'completed';
+        await purchaseData.save();
+    
+        console.log(`Payment for purchase ${purchaseId} marked as completed.`);
+      } catch (err) {
+        console.error("Error in payment_intent.succeeded handler:", err);
+      }
+    
       break;
     }
-
+    
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object;
       const paymentIntentId = paymentIntent.id;
