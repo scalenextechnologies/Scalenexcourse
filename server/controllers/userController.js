@@ -101,7 +101,7 @@ export const updateUserCourseProgress = async (req, res) => {
             if (progressData.lectureCompleted.includes(lectureId)) {
                 return res.json({ success: true, message: 'Lecture Already Completed' })
             }
-            progressData.lectureCompleted.push()
+            progressData.lectureCompleted.push(lectureId)
             await progressData.save()
         } else {
             await CourseProgress.create({
@@ -110,7 +110,7 @@ export const updateUserCourseProgress = async (req, res) => {
                 lectureCompleted: [lectureId]
             })
         }
-        res.json({ sucess: true, message: 'Progress Updated' })
+        res.json({ success: true, message: 'Progress Updated' })
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
@@ -141,7 +141,7 @@ export const getUserCourseProgress=async (req,res) => {
 
 export const addUserRating=async (req,res) => {
     const userId =req.auth.userId;
-    const {courseId,rating}=request.body
+    const {courseId,rating}=req.body
 
     if(!courseId || !userId || !rating || rating <1 || rating >5 ){
         return res.json({success:false,message: 'Invalid Details'})
